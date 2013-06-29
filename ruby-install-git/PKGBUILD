@@ -1,15 +1,25 @@
 # Maintainer: Whyme Lyu <callme5long@gmail.com>
-pkgname=ruby-install
-pkgver=0.2.0
+pkgname=ruby-install-git
+_pkgver=0.2.0
+pkgver=0.2.0.16.gb9da5a6
 pkgrel=1
 pkgdesc="Install Ruby, JRuby, Rubinius or MagLev"
 arch=('any')
-url="https://github.com/postmodern/$pkgname"
+_gitname=ruby-install
+_pkgname="$_gitname"
+url="https://github.com/postmodern/$_gitname"
 license=('MIT')
 depends=('bash')
-source=("$url/archive/v$pkgver.tar.gz")
-sha1sums=('96901c36d163362214882541e9fe38fceba7bf97')
+makedepends=('git')
+source=("git+$url")
+sha1sums=('SKIP')
 
+pkgver() {
+  cd "$_gitname"
+  local version="$(git describe --always)"
+  local version="${version#v}"
+  echo "${version//-/.}"
+}
 
 package() {
   _make_install
@@ -18,13 +28,13 @@ package() {
 }
 
 _make_install() {
-  cd "$srcdir/$pkgname-$pkgver"
+  cd "$srcdir/$_gitname"
   make "PREFIX=$pkgdir/usr" install
 }
 
 _normalize_dir_name() {
   cd "$pkgdir/usr/share/doc"
-  mv "$pkgname-$pkgver" "$pkgname"
+  mv "$_pkgname-$_pkgver" "$_pkgname"
 }
 
 _symlink_license_to_std_location() {
@@ -32,7 +42,7 @@ _symlink_license_to_std_location() {
 
   mkdir -p "$pkgdir/$license_dir"
   cd "$pkgdir/$license_dir"
-  ln -s "../../doc/$pkgname/LICENSE.txt" LICENSE
+  ln -s "../../doc/$_pkgname/LICENSE.txt" LICENSE
 }
 
 # vim:set ts=2 sw=2 et:
