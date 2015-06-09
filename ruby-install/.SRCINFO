@@ -1,0 +1,13 @@
+pkgbase = ruby-install
+	pkgdesc = Install Ruby, JRuby, Rubinius or MagLev
+	pkgver = 0.5.0
+	pkgrel = 1
+	url = https://github.com/postmodern/ruby-install
+	arch = any
+	license = MIT
+	depends = bash
+	source = https://github.com/postmodern/ruby-install/archive/v0.5.0.tar.gz
+	sha1sums = d8061e46fe2ea40f867e219cdd7d28fea24f47ca
+
+pkgname = ruby-install
+
