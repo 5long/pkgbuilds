@@ -1,0 +1,38 @@
+# Maintainer: Whyme Lyu <callme5long@gmail.com>
+pkgname=ruby-install
+pkgver=0.5.0
+pkgrel=1
+pkgdesc="Install Ruby, JRuby, Rubinius or MagLev"
+arch=('any')
+url="https://github.com/postmodern/$pkgname"
+license=('MIT')
+depends=('bash')
+makedepends=()
+source=("https://github.com/postmodern/ruby-install/archive/v0.5.0.tar.gz")
+sha1sums=('SKIP')
+
+package() {
+  _make_install
+  _normalize_dir_name
+  _symlink_license_to_std_location
+}
+
+_make_install() {
+  cd "$srcdir/$pkgname-$pkgver"
+  make "PREFIX=$pkgdir/usr" install
+}
+
+_normalize_dir_name() {
+  cd "$pkgdir/usr/share/doc"
+  mv "$pkgname-$pkgver" "$pkgname"
+}
+
+_symlink_license_to_std_location() {
+  local license_dir=usr/share/licenses/ruby-install
+
+  mkdir -p "$pkgdir/$license_dir"
+  cd "$pkgdir/$license_dir"
+  ln -s "../../doc/$pkgname/LICENSE.txt" LICENSE
+}
+
+# vim:set ts=2 sw=2 et:
