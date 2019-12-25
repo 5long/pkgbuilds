@@ -1,0 +1,16 @@
+#!/usr/bin/env ruby
+
+require "thor"
+require "rake"
+
+class Script < Thor
+  include FileUtils
+
+  desc "deploy PKGNAME", "push PKGNAME to AUR"
+  def deploy(name)
+    cmd = %W[git subtree push -P #{name} ssh://aur@aur.archlinux.org/#{name}.git master]
+    sh(*cmd)
+  end
+end
+
+Script.start ARGV
