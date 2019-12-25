@@ -1,5 +1,6 @@
 /*/pkg/
 /*/src/
+*.log
 
 *.pkg.tar.xz
 *.pkg.tar.zst
