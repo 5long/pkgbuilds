@@ -11,6 +11,12 @@ class Script < Thor
     cmd = %W[git subtree push -P #{name} ssh://aur@aur.archlinux.org/#{name}.git master]
     sh(*cmd)
   end
+
+  desc "srcinfo PKGNAME", "generate .SRCINFO for PKGNAME"
+  def srcinfo(name)
+    cmd = %[cd #{name} && makepkg -C --printsrcinfo > .SRCINFO]
+    sh(cmd)
+  end
 end
 
 Script.start ARGV
