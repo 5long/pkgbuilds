@@ -1,0 +1,5 @@
+*.tar.gz
+
+exercism.fish
+exercism_completion.bash
+exercism_completion.zsh

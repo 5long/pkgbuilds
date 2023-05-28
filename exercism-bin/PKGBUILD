@@ -1,0 +1,43 @@
+# Maintainer: linduxed <linduxed at protonmail dot com>
+# Contributor: Faerbit <faerbit at gmail dot com>
+# Contributor: patrick96 <p dot ziegler96 at gmail dot com>
+
+_pkgname=exercism
+pkgname="${_pkgname}-bin"
+pkgver=3.1.0
+pkgrel=1
+pkgdesc="Command line client for exercism.io"
+arch=("i686" "x86_64")
+url="https://github.com/exercism/cli"
+# URL for release downloads
+_rel_url="${url}/releases/download/v${pkgver}"
+# URL for downloading single file from source repo
+_raw_url=https://raw.githubusercontent.com/exercism/cli/v$pkgver
+conflicts=(exercism)
+replaces=("exercism-cli")
+license=("MIT")
+
+_source_common=(
+  $_raw_url/shell/exercism_completion.bash
+  $_raw_url/shell/exercism_completion.zsh
+  $_raw_url/shell/exercism.fish
+)
+_sha256sums_common=(
+  4abb9b94262a08ede1019cbfc900d01f33123de616bb5a7c202d54ca59718590
+  b28df2a4f6099f5466c623a3618c58dea68611858153442fea978deb5fe027df
+  7a507799016da33bf0b055b7bbadf54a3de3b22b9fef055581f37fab39e31943
+)
+
+source_i686=(${_rel_url}/exercism-${pkgver}-linux-i386.tar.gz ${_source_common[@]})
+sha256sums_i686=('e47d26d4efe836043a2f4b436dbbd552962f23771bf7f741c85d57e77dc7af54' ${_sha256sums_common[@]})
+source_x86_64=(${_rel_url}/exercism-${pkgver}-linux-x86_64.tar.gz ${_source_common[@]})
+sha256sums_x86_64=('97ba90d7d83a9e8de57066be4d42319c33165a355c7072f535ba37c00aedf432' ${_sha256sums_common[@]})
+
+package(){
+    cd "$srcdir"
+    install -D -m644 LICENSE "$pkgdir/usr/share/licenses/$_pkgname/LICENSE"
+    install -D -m644 exercism_completion.bash "$pkgdir/usr/share/bash-completion/completions/${_pkgname}"
+    install -D -m644 exercism_completion.zsh "$pkgdir/usr/share/zsh/site-functions/_${_pkgname}"
+    install -D -m644 exercism.fish "$pkgdir/usr/share/fish/vendor_completions.d/exercism.fish"
+    install -D exercism "$pkgdir/usr/bin/exercism"
+}
