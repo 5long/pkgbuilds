@@ -1,0 +1,5 @@
+*.efi
+*.pxe
+*.iso
+*.lkrn
+*.kpxe

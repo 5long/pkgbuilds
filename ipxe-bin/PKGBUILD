@@ -1,0 +1,36 @@
+# Maintainer: Whyme Lyu <callme5long@gmail.com>
+
+###
+# WARNING
+# The official prebuit images are rebuilt every hour
+# We can't know for sure what version they are
+pkgname=ipxe-bin
+pkgver=1.21.1+1691073963
+pkgrel=1
+pkgdesc="Network bootloader - prebuilt images"
+arch=('any')
+url="https://ipxe.org"
+license=('GPL2' 'custom:UBDL')
+
+_host=https://boot.ipxe.org
+source=(
+  "$_host"/ipxe.efi
+  "$_host"/ipxe.iso
+  "$_host"/ipxe.lkrn
+  "$_host"/ipxe.pxe
+  "$_host"/undionly.kpxe
+)
+noextract=(ipxe.iso)
+sha256sums=(SKIP SKIP SKIP SKIP SKIP)
+
+package() {
+  cd "$srcdir"
+
+  data_dir="$pkgdir"/usr/share/"$pkgname"
+  
+  install -Dm644 {,"$data_dir"/}ipxe.efi
+  install -Dm644 {,"$data_dir"/}ipxe.iso
+  install -Dm644 {,"$data_dir"/}ipxe.lkrn
+  install -Dm644 {,"$data_dir"/}ipxe.pxe
+  install -Dm644 {,"$data_dir"/}undionly.kpxe
+}
