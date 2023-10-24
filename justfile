@@ -7,4 +7,4 @@ srcinfo pkg:
 
 # push {{pkg}} to AUR
 deploy pkg:
-  git subtree push -P {{pkg}} ssh://aur@aur.archlinux.org/{{pkg}}/.git master
+  git subtree push -P {{pkg}} ssh://aur@aur.archlinux.org/{{pkg}}.git master
