@@ -1,6 +1,10 @@
 default:
   @just -l
 
+# makepkg --geninteg for {{pkg}}
+geninteg pkg:
+  cd {{pkg}} && test -w PKGBUILD && makepkg -g >> PKGBUILD
+
 # generate .SRCINFO for {{pkg}}
 srcinfo pkg:
   cd {{pkg}} && makepkg -C --printsrcinfo > .SRCINFO
