@@ -1,0 +1,9 @@
+# Maintainer: Whyme Lyu <callme5long@gmail.com>
+pkgname=dummy-ttf-liberation
+pkgver=1
+pkgrel=1
+pkgdesc="A dummy package to replace the package you don't need"
+arch=('any')
+_replaces='ttf-liberation'
+provides=("$_replaces")
+conflicts=("$_replaces")
