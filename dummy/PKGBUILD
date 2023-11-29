@@ -1,0 +1,8 @@
+pkgname=dummy
+pkgver=1
+pkgrel=1
+pkgdesc="A dummy package to replace the package you don't need"
+arch=('any')
+_replaces=""
+provides=("$_replaces")
+conflicts=("$_replaces")
