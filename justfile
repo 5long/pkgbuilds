@@ -3,7 +3,9 @@ default:
 
 # makepkg --geninteg for {{pkg}}
 geninteg pkg:
-  cd {{pkg}} && test -w PKGBUILD && makepkg -g >> PKGBUILD
+  cd {{pkg}} && test -w PKGBUILD \
+  && ruby -i -ne 'print $_ if not /^sha256sums=/ .. /^$/ ' PKGBUILD \
+  && makepkg -g >> PKGBUILD
 
 # generate .SRCINFO for {{pkg}}
 srcinfo pkg:
