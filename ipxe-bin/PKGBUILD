@@ -6,11 +6,11 @@
 # We can't know for sure what version they are
 pkgname=ipxe-bin
 pkgver=1.21.1+1691073963
-pkgrel=1
+pkgrel=2
 pkgdesc="Network bootloader - prebuilt images"
 arch=('any')
 url="https://ipxe.org"
-license=('GPL2' 'custom:UBDL')
+license=('GPL-2.0-or-later with UBDL-exception')
 
 _host=https://boot.ipxe.org
 source=(
