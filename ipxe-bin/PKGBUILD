@@ -5,12 +5,12 @@
 # The official prebuit images are rebuilt every hour
 # We can't know for sure what version they are
 pkgname=ipxe-bin
-pkgver=1.21.1+1691073963
-pkgrel=2
+pkgver=1.21.1+1705413132
+pkgrel=3
 pkgdesc="Network bootloader - prebuilt images"
 arch=('any')
 url="https://ipxe.org"
-license=('GPL-2.0-or-later with UBDL-exception')
+license=('GPL-2.0-or-later WITH UBDL-exception')
 
 _host=https://boot.ipxe.org
 source=(
@@ -19,18 +19,22 @@ source=(
   "$_host"/ipxe.lkrn
   "$_host"/ipxe.pxe
   "$_host"/undionly.kpxe
+  https://raw.githubusercontent.com/ipxe/ipxe/master/COPYING.GPLv2
+  https://raw.githubusercontent.com/ipxe/ipxe/master/COPYING.UBDL
 )
 noextract=(ipxe.iso)
-sha256sums=(SKIP SKIP SKIP SKIP SKIP)
+sha256sums=(SKIP SKIP SKIP SKIP SKIP
+    '8177f97513213526df2cf6184d8ff986c675afb514d4e68a404010521b880643'
+            '5be9d2f0268908f2eeb87578d9b730caf6f7b36bdc7a520b1a176f9ac0bf1db8'
+)
 
 package() {
   cd "$srcdir"
 
+  install -Dm644 -t "$pkgdir/usr/share/licenses/$pkgname" COPYING.{GPLv2,UBDL} 
+
   data_dir="$pkgdir"/usr/share/"$pkgname"
-  
-  install -Dm644 {,"$data_dir"/}ipxe.efi
-  install -Dm644 {,"$data_dir"/}ipxe.iso
-  install -Dm644 {,"$data_dir"/}ipxe.lkrn
-  install -Dm644 {,"$data_dir"/}ipxe.pxe
-  install -Dm644 {,"$data_dir"/}undionly.kpxe
+
+  install -Dm644 -t "$data_dir" \
+    ipxe.efi ipxe.iso ipxe.lkrn ipxe.pxe undionly.kpxe
 }
