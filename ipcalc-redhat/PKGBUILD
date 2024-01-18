@@ -9,13 +9,15 @@ url="https://gitlab.com/ipcalc/ipcalc"
 license=('GPL-2.0-or-later')
 conflicts=('ipcalc')
 depends=('glibc')
-makedepends=('meson' 'ruby-ronn')
+makedepends=('geoip' 'meson' 'ruby-ronn')
+optdepends=('geoip: display geoinfo for IP with -g')
 source=("https://gitlab.com/ipcalc/ipcalc/-/archive/${pkgver}/ipcalc-${pkgver}.tar.gz")
 sha256sums=('0c08a63be9e75201b42038f22f9ae81bdc63a9cc540739df04c2084faca6e605')
 
 build() {
   cd "$srcdir/ipcalc-$pkgver"
-  meson setup build -Duse_maxminddb=disabled -Duse_geoip=disabled
+  meson setup build -Duse_maxminddb=disabled -Duse_geoip=enabled \
+    -Duse_runtime_linking=enabled
   ninja -C build
 }
 
