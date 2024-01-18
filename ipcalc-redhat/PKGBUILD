@@ -26,3 +26,8 @@ package() {
     install -m755 -Dt "${pkgdir}/usr/bin/" build/ipcalc
     install -m644 -Dt "${pkgdir}/usr/share/man/man1/" build/ipcalc.1
 }
+
+check() {
+    cd "$srcdir/ipcalc-$pkgver"
+    ninja -C build test
+}
