@@ -11,6 +11,11 @@ geninteg pkg:
 srcinfo pkg:
   cd {{pkg}} && makepkg -C --printsrcinfo > .SRCINFO
 
+# update {{pkg}}
+up pkg:
+  @just geninteg {{pkg}}
+  @just srcinfo {{pkg}}
+
 # push {{pkg}} to AUR
 deploy pkg:
   git subtree push -P {{pkg}} ssh://aur@aur.archlinux.org/{{pkg}}.git master
