@@ -1,6 +1,13 @@
 default:
   @just -l
 
+### Playbook:
+# - update version number in PKGBUILD
+# - `just up <pkg>`
+# - `just bi <pkg>` to test it out
+# - commit changes to git
+# - `just deploy <pkg>`
+
 # makepkg --geninteg for {{pkg}}
 geninteg pkg:
   cd {{pkg}} && test -w PKGBUILD \
@@ -15,6 +22,10 @@ srcinfo pkg:
 up pkg:
   @just geninteg {{pkg}}
   @just srcinfo {{pkg}}
+
+# build & install {{pkg}}
+bi pkg:
+  cd {{pkg}} && makepkg -si
 
 # push {{pkg}} to AUR
 deploy pkg:
