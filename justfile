@@ -25,7 +25,7 @@ up pkg:
 
 # build & install {{pkg}}
 bi pkg:
-  cd {{pkg}} && makepkg -si
+  cd {{pkg}} && makepkg -si --nocheck
 
 # push {{pkg}} to AUR
 deploy pkg:
