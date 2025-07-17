@@ -11,8 +11,7 @@ default:
 # makepkg --geninteg for {{pkg}}
 geninteg pkg:
   cd {{pkg}} && test -w PKGBUILD \
-  && updpkgsums \
-  && makepkg -g >> PKGBUILD
+  && updpkgsums
 
 # generate .SRCINFO for {{pkg}}
 srcinfo pkg:
