@@ -1,0 +1,6 @@
+#%PAM-1.0
+session required pam_limits.so
+
+auth 	include	system-auth
+account	include	system-auth
+session	include	system-auth
