@@ -1,0 +1,15 @@
+pkgname=crun-shim
+pkgver=1
+pkgrel=1
+pkgdesc="Replace runc with crun"
+arch=('any')
+depends=(crun)
+provides=(runc)
+conflicts=(runc)
+
+package() {
+  pushd "$pkgdir"
+  install -dm755 usr/bin
+  ln -s crun usr/bin/runc
+  popd
+}
