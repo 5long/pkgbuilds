@@ -1,14 +1,14 @@
 pkgname=sudo-rs-shim
 pkgver=1
-pkgrel=4
+pkgrel=6
 pkgdesc="Symlink to provide sudo with sudo-rs"
 arch=('any')
 depends=('pambase' 'sudo-rs')
 _replaces=('sudo')
 provides=(${_replaces[*]})
 conflicts=(${_replaces[*]})
-source=(pam-sudo-conf)
-b2sums=('SKIP')
+source=(pam-sudo-conf sudoers-rs)
+b2sums=(SKIP SKIP)
 
 _pamconf=etc/pam.d/sudo
 backup=("$_pamconf" "${_pamconf}-i")
@@ -16,6 +16,8 @@ backup=("$_pamconf" "${_pamconf}-i")
 package() {
   cd "$pkgdir"
   install -dm755 usr/bin
+  install -dm755 etc
+  install -dm750 etc/sudoers.d
 
   cd usr/bin
   ln -sf sudo-rs sudo
@@ -25,4 +27,5 @@ package() {
 
   install -Dm644 "$srcdir/pam-sudo-conf" "$_pamconf"
   install -Dm644 "$srcdir/pam-sudo-conf" "${_pamconf}-i"
+  install -Dm440 "$srcdir/sudoers-rs" etc/sudoers-rs
 }
