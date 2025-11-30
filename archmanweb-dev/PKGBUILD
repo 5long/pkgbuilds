@@ -1,0 +1,9 @@
+# Maintainer: Whyme Lyu <callme5long@gmail.com>
+
+pkgname=archmanweb-dev
+pkgver=1
+pkgrel=1
+pkgdesc="Development dependencies of archmanweb"
+arch=('any')
+url="https://gitlab.archlinux.org/archlinux/archmanweb"
+depends=(pyalpm python-chardet python-django python-django-csp python-psycopg2 python-requests python-xtarfile sassc)
