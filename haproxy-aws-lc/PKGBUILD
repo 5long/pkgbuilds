@@ -1,20 +1,43 @@
-# Maintainer: Johannes Löthberg <johannes@kyriasis.com>
+# Maintainer: Whyme Lyu <callme5long@gmail.com>
+# Contributor: Johannes Löthberg <johannes@kyriasis.com>
 # Contributor: Bartłomiej Piotrowski <bpiotrowski@archlinux.org>
+#
+# Forked from Arch packaging repo:
+# https://gitlab.archlinux.org/archlinux/packaging/packages/haproxy
 
-pkgname=haproxy
+# Built with aws-lc, jemalloc & libslz.
+# This is pretty close to upstream's "performance packages" which is
+# only available for Debian & Ubuntu for now:
+# https://www.haproxy.com/downloads
+
+# Make the package name the same as official performance packages
+# (why is it not called haproxy-pp though)
+pkgname=haproxy-awslc
+_pkgname=haproxy
 pkgver=3.3.3
-pkgrel=2
+pkgrel=1
 
-# Each release serie has its own repository. This is handled automatically in
-# PKGBUILD, but nvchecker configuration needs to be updated on bump!
-
-pkgdesc='Reliable, high performance TCP/HTTP load balancer'
+pkgdesc='Reliable, high performance TCP/HTTP load balancer built with aws-lc'
 url='https://www.haproxy.org/'
 arch=('x86_64')
 license=('GPL-2.0-or-later')
 
-depends=('openssl' 'pcre2' 'zlib' 'libxcrypt' 'libcrypt.so' 'lua' 'systemd-libs')
+# Just sort it alphabetically
+depends=(
+  'aws-lc'
+  'jemalloc'
+  'libcrypt.so'
+  'libjemalloc.so'
+  'libxcrypt'
+  'lua'
+  'pcre2'
+  'systemd-libs'
+)
+checkdepends=('varnish')
 makedepends=('git' 'systemd')
+
+provides=($_pkgname)
+conflicts=($_pkgname)
 
 backup=('etc/haproxy/haproxy.cfg')
 
@@ -23,6 +46,10 @@ install=haproxy.install
 validpgpkeys=('0C9568FA554656551590C5E44E386D9C9C61702F'  # Willy Tarreau <w@1wt.eu>
               '07D5F18D201984D7D13FB7AAF5F936267AA4B280'  # Christopher Faulet <christopher.faulet@capflam.org>
               '692A51FE968BDB627C8C4B0E12F8CCEE5C19FD8D') # Amaury Denoyelle <adenoyelle@haproxy.com>
+
+# Each release serie has its own repository. This is handled automatically in
+# PKGBUILD, but nvchecker configuration needs to be updated on bump!
+
 source=("git+https://git.haproxy.org/git/haproxy-${pkgver%.*}.git#tag=v${pkgver}?signed"
         'haproxy.cfg'
         'haproxy.sysusers'
@@ -47,14 +74,16 @@ build() {
   make \
     CFLAGS="$CFLAGS" \
     LDFLAGS="$LDFLAGS" \
+    ADDLIB="-Wl,-rpath=/usr/lib/aws-lc/ -ljemalloc" \
+    SSL_INC=/usr/include/aws-lc/ \
+    SSL_LIB=/usr/lib/aws-lc/ \
     TARGET=linux-glibc \
-    USE_GETADDRINFO=1 \
     USE_LUA=1 \
-    USE_OPENSSL=1 \
+    USE_MEMORY_PROFILING=1 \
+    USE_OPENSSL_AWSLC=1 \
     USE_PCRE2=1 USE_PCRE2_JIT=1 \
     USE_PROMEX=1 \
-    USE_QUIC=1 \
-    USE_ZLIB=1
+    USE_QUIC=1
 
   make \
     SBINDIR=/usr/bin \
@@ -67,13 +96,31 @@ build() {
     -C admin/systemd/
 }
 
+check() {
+  cd "haproxy-${pkgver%.*}"
+
+  # We need to make sure haproxy actually links to .so of aws-lc
+  # A misconfigured build could fallback to linking openssl because aws-lc
+  # doesn't change the soname.
+  ldd ./haproxy | grep -Fq /usr/lib/aws-lc/
+  if [ $? = 1 ]; then
+    echo "Executable \`haproxy' isn't linked to aws-lc libraries. Abort"
+    return 1
+  fi
+
+  make \
+    REGTESTS_TYPES=default \
+    VTEST_PROGRAM=/usr/bin/vtest \
+    unit-tests reg-tests
+}
+
 package() {
   cd "haproxy-${pkgver%.*}"
 
   make \
     PREFIX="$pkgdir"/usr \
     SBINDIR="$pkgdir"/usr/bin \
-    DOCDIR="$pkgdir"/usr/share/$pkgname \
+    DOCDIR="$pkgdir"/usr/share/haproxy \
     install
 
   for admin in admin/{halog/halog,iprange/ip{,6}range}; do
