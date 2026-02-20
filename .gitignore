@@ -9,5 +9,6 @@
 *.zip
 *.deb
 *.tar.gz
+*.tar.bz2
 *.tar.xz
 *.asc
