@@ -1,0 +1,13 @@
+diff --git i/Makefile w/Makefile
+index 90e791f39..9ef8b6e5c 100644
+--- i/Makefile
++++ w/Makefile
+@@ -637,7 +637,7 @@ ifneq ($(USE_OPENSSL:0=),)
+   # only preset these for the regular openssl
+   ifeq ($(USE_OPENSSL_WOLFSSL:0=),)
+     SSL_CFLAGS    := $(if $(SSL_INC),-I$(SSL_INC))
+-    SSL_LDFLAGS   := $(if $(SSL_LIB),-L$(SSL_LIB)) -lssl -lcrypto
++    SSL_LDFLAGS   := $(if $(SSL_LIB),-L$(SSL_LIB)) -lssl-awslc -lcrypto-awslc
+   endif
+   USE_SSL         := $(if $(USE_SSL:0=),$(USE_SSL:0=),implicit)
+   OPTIONS_OBJS += src/ssl_sock.o src/ssl_ckch.o src/ssl_ocsp.o src/ssl_crtlist.o       \
