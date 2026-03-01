@@ -11,7 +11,7 @@
 
 pkgname=aws-lc
 pkgver=1.68.0
-pkgrel=2
+pkgrel=3
 pkgdesc='General-purpose cryptographic library maintained by the AWS Cryptography team for AWS'
 url='https://github.com/aws/aws-lc'
 license=('MIT' 'ISC' 'Apache-2.0' 'OpenSSL')
@@ -33,15 +33,24 @@ optdepends=(
   'llvm: LLVM toolchain utilities (ar, ranlib, etc.) for use with clang'
 )
 arch=('x86_64')
-source=("${pkgname}-${pkgver}.tar.gz::${url}/archive/refs/tags/v${pkgver}.tar.gz")
-b2sums=('9fdb1c2bfc3f87f6bc849d4eb6a82b6628a6aad53db5361dcd9e1209c34edbeafe65195ecf6fcec70ed4ed9360885d0769fb3580d6c9d79b2637c63ce00a0246')
-options=('!lto' 'staticlibs')
+source=(
+  "${pkgname}-${pkgver}.tar.gz::${url}/archive/refs/tags/v${pkgver}.tar.gz"
+  "https://patch-diff.githubusercontent.com/raw/aws/aws-lc/pull/3042.patch"
+)
+b2sums=('9fdb1c2bfc3f87f6bc849d4eb6a82b6628a6aad53db5361dcd9e1209c34edbeafe65195ecf6fcec70ed4ed9360885d0769fb3580d6c9d79b2637c63ce00a0246'
+        'd1b962c8b4bf992ef1cdff2ff3e71bb6fe150d3a3498083eeb73ee8a4337704c344caa986f976a48236b40aa1b99a2fdec3d86c5de8b9cc0ba93201287026630')
+options=('!lto')
 
 # Temporary: testing with Clang/LLVM toolchain
 # No need to disable lto in 'options' above when using Clang
 #_set_clang_toolchain() {
 #    export CC=clang CXX=clang++ AR=llvm-ar NM=llvm-nm RANLIB=llvm-ranlib
 #}
+
+prepare() {
+  cd "$srcdir/$pkgname-$pkgver"
+  patch -p1 <../3042.patch
+}
 
 build() {
     cd "$srcdir/${pkgname}-${pkgver}"
@@ -58,15 +67,15 @@ build() {
 
     # Temporary: testing with Clang/LLVM toolchain
     #_set_clang_toolchain
-    
+
     cmake -B build \
           -GNinja \
           -DCMAKE_BUILD_TYPE=Release \
           -DCMAKE_INSTALL_PREFIX=/usr \
           -DCMAKE_INSTALL_SBINDIR:PATH=bin/${pkgname} \
           -DCMAKE_INSTALL_BINDIR:PATH=bin/${pkgname} \
-          -DCMAKE_INSTALL_LIBDIR:PATH=lib/${pkgname} \
-          -DCMAKE_INSTALL_INCLUDEDIR:PATH=include/${pkgname}
+          -DBUILD_SHARED_LIBS=ON \
+          -DENABLE_DIST_PKG=ON
 
     ninja -C build
 }
@@ -84,23 +93,6 @@ package() {
     cd "$srcdir/${pkgname}-${pkgver}"
 
     DESTDIR="$pkgdir" ninja -C build install
-
-    # Ensure the parent directory exists
-    mkdir -p "$pkgdir/usr/lib"
-
-    # Move the whole folder and rename it in one go
-    mv "$pkgdir/usr/lib/$pkgname/pkgconfig" "$pkgdir/usr/lib/pkgconfig"
-
-    # Rename the individual pc-files to not conflict with local OpenSSL
-    mv "$pkgdir/usr/lib/pkgconfig/openssl.pc"   "$pkgdir/usr/lib/pkgconfig/$pkgname.pc"
-    mv "$pkgdir/usr/lib/pkgconfig/libssl.pc"    "$pkgdir/usr/lib/pkgconfig/$pkgname-libssl.pc"
-    mv "$pkgdir/usr/lib/pkgconfig/libcrypto.pc" "$pkgdir/usr/lib/pkgconfig/$pkgname-libcrypto.pc"
-
-    # Update pkgconfig's "Requires" to our new locations
-    sed -i 's/^Requires: libssl libcrypto/Requires: aws-lc-libssl aws-lc-libcrypto/' \
-    "$pkgdir/usr/lib/pkgconfig/$pkgname.pc"
-    sed -i 's/^Requires\.private: libcrypto/Requires.private: aws-lc-libcrypto/' \
-    "$pkgdir/usr/lib/pkgconfig/$pkgname-libssl.pc"
 
     # Documentation
     install -Dm644 README.md "${pkgdir}/usr/share/doc/${pkgname}/README.md"
