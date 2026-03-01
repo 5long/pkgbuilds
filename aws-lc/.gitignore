@@ -1,0 +1,9 @@
+*
+!.gitignore
+!.nvchecker.toml
+!PKGBUILD
+!.SRCINFO
+!keys/
+!keys/pgp/
+!keys/pgp/*
+!*.patch
