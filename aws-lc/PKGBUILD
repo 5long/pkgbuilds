@@ -11,11 +11,12 @@
 
 pkgname=aws-lc
 pkgver=1.68.0
-pkgrel=3
+pkgrel=4
 pkgdesc='General-purpose cryptographic library maintained by the AWS Cryptography team for AWS'
 url='https://github.com/aws/aws-lc'
 license=('MIT' 'ISC' 'Apache-2.0' 'OpenSSL')
 options=()
+provides=(libssl-awslc.so libcrypto-awslc.so)
 depends=(
   'glibc'
   'gcc-libs'
