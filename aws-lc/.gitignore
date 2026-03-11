@@ -7,3 +7,5 @@
 !keys/pgp/
 !keys/pgp/*
 !*.patch
+
+3042.patch
