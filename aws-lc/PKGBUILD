@@ -84,7 +84,7 @@ check() {
     # Temporary: testing with Clang/LLVM toolchain
     #_set_clang_toolchain
 
-    ninja -C build -j $(nproc) run_tests
+    ninja -C build
 }
 
 package() {
