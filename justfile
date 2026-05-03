@@ -26,6 +26,10 @@ up pkg:
 bi pkg:
   cd {{pkg}} && makepkg -si --nocheck
 
+# build w/ aurutils
+ba pkg:
+  cd {{pkg}} && aur build -c -K -f .
+
 # push {{pkg}} to AUR
 deploy pkg:
   git subtree push -P {{pkg}} ssh://aur@aur.archlinux.org/{{pkg}}.git master
