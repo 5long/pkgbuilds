@@ -28,7 +28,7 @@ bi pkg:
 
 # build w/ aurutils
 ba pkg:
-  cd {{pkg}} && aur build -c -K -f .
+  cd {{pkg}} && aur build -c -f .
 
 # push {{pkg}} to AUR
 deploy pkg:
